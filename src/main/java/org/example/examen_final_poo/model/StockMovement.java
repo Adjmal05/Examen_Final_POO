@@ -14,11 +14,9 @@ import java.util.Objects;
  * - quantity       -> stock_movement.quantity        (INTEGER)
  *
  * Relation UML "concern" (StockMovement 0..* -> Product 1..1) :
- * navigabilité StockMovement -> Product, traduite par une référence
- * objet complète (Option 1 validée), reconstruite par le DAO via
- * jointure/second SELECT lors du mapping ResultSet -> POJO.
- * La FK product_id (VARCHAR(36)) reste un détail d'implémentation SQL,
- * non exposé ici en tant qu'attribut métier.
+ * navigabilité StockMovement -> Product, traduite ici par l'identifiant
+ * du produit (Option 2 - décision révisée), reflétant directement
+ * la colonne FK stock_movement.product_id en base.
  */
 public class StockMovement {
 
@@ -26,18 +24,18 @@ public class StockMovement {
     private Instant createdAt;
     private MovementType movementType;
     private int quantity;
-    private Product product;
+    private String productId;
 
     public StockMovement() {
     }
 
     public StockMovement(String id, Instant createdAt, MovementType movementType,
-                         int quantity, Product product) {
+                         int quantity, String productId) {
         this.id = id;
         this.createdAt = createdAt;
         this.movementType = movementType;
         this.quantity = quantity;
-        this.product = product;
+        this.productId = productId;
     }
 
     public String getId() {
@@ -72,12 +70,12 @@ public class StockMovement {
         this.quantity = quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     @Override
@@ -100,7 +98,7 @@ public class StockMovement {
                 ", createdAt=" + createdAt +
                 ", movementType=" + movementType +
                 ", quantity=" + quantity +
-                ", product=" + product +
+                ", productId='" + productId + '\'' +
                 '}';
     }
 }
